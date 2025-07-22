@@ -1,4 +1,4 @@
-# 🔗 Enkel Blockchain med Flask og Dynamisk Vanskelighetsgrad
+# Enkel Blockchain med Flask og Dynamisk Vanskelighetsgrad
 
 Dette er et læringsprosjekt som viser hvordan en enkel blokkjede fungerer. Det bruker Python, Flask og dynamisk justering av vanskelighetsgrad for mining. Perfekt for å lære hvordan `hash`, `proof of work` og `blokkvalidering` fungerer i praksis.
 
