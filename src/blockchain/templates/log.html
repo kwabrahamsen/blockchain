@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <title>Blockchain Logg</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Blockchain Logg</h1>
+  <p><a href="/">← Tilbake til GUI</a></p>
+
+  <input type="text" id="search" placeholder="🔎 Søk etter data eller blokk #" class="search-bar">
+
+  <div class="button-row">
+    <form method="post" action="{{ url_for('repair_chain') }}">
+        <button type="submit" class="btn-link">🔧 Reparer kjede</button>
+    </form>
+    <form method="post" action="{{ url_for('break_block', index=1) }}">
+        <button type="submit" class="btn-link">💥 Simuler feil i blokk 1</button>
+    </form>
+  </div>
+
+  <table class="log-table" id="log-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Data</th>
+        <th>Tid</th>
+        <th>Nonce</th>
+        <th>Hash</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for block in log %}
+        <tr class="
+            {% if block.index == 0 %} genesis-block {% endif %}
+            {% if loop.first %} latest-block {% endif %}
+            {% if block.index in invalid_blocks %} invalid-block {% endif %}
+        ">
+          <td>{{ block.index }}</td>
+          <td>{{ block.data }}</td>
+          <td>{{ block.timestamp }}</td>
+          <td>{{ block.nonce }}</td>
+          <td><code>{{ block.hash }}</code></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div id="blockModal" class="modal">
+  <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>🔍 Blokkdetaljer</h2>
+      <div id="hash-visualization" class="hash-viz"></div>
+      <pre id="modal-content-json"></pre>
+  </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('search');
+    const rows = document.querySelectorAll('#log-table tbody tr');
+
+    searchInput.addEventListener('input', function () {
+      const value = this.value.toLowerCase();
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(value) ? '' : 'none';
+      });
+    });
+
+    // Modal
+    const modal = document.getElementById("blockModal");
+    const modalContent = document.getElementById("modal-content-json");
+    const closeBtn = document.querySelector(".modal .close");
+
+    // Klikk på rad for popup
+    rows.forEach(row => {
+        row.addEventListener('click', () => {
+            const cells = row.querySelectorAll('td');
+            const data = {
+                index: cells[0].textContent,
+                data: cells[1].textContent,
+                timestamp: cells[2].textContent,
+                nonce: cells[3].textContent,
+                hash: cells[4].textContent,
+            };
+
+            // Find previous hash manually (row below if it exists)
+            const nextRow = row.nextElementSibling;
+            if (nextRow) {
+                const prevHash = nextRow.querySelectorAll('td')[4]?.textContent;
+                data.previous_hash = prevHash || "(ukjent)";
+            } else {
+                data.previous_hash = "(Genesis)";
+            }
+
+            modalContent.textContent = JSON.stringify(data, null, 2);
+            modal.style.display = "block";
+
+            const hash = cells[4].textContent.trim();
+            const hashViz = document.getElementById("hash-visualization");
+
+            // Visualiser hash som fargestripe
+            hashViz.innerHTML = '';
+            for (let i = 0; i < hash.length; i += 6) {
+                const chunk = hash.substring(i, i + 6);
+                if (chunk.length === 6) {
+                    const span = document.createElement('span');
+                    span.style.backgroundColor = `#${chunk}`;
+                    span.className = "hash-block";
+                    hashViz.appendChild(span);
+                }
+            }
+        });
+    });
+
+    // Lukkeknapp
+    closeBtn.onclick = () => modal.style.display = "none";
+
+    // Klikk utenfor = lukk
+    window.onclick = (e) => {
+    if (e.target == modal) modal.style.display = "none";
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <title>Min Blockchain</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Enkel Blockchain</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="message">
+        {% for msg in messages %}
+            <p>{{ msg }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+  {% endwith %}
+
+  <form class="block-input" action="/submit" method="post">
+    <input type="text" name="data" placeholder="Skriv blokk-data her" required>
+    <button type="submit">Legg til blokk</button>
+  </form>
+
+<div class="button-row">
+  <button id="validate-btn" class="btn-link">🔍 Valider kjeden</button>
+  <a href="/log" class="btn-link">📜 Se blokk-logg</a>
+</div>
+<p id="validation-result" class="validation-status"></p>
+
+<p id="validation-result" class="validation-status"></p>
+    <div id="chain-container" class="chain-grid"></div>
+
+    <script>
+    fetch("/chain")
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("chain-container");
+
+            data.forEach(block => {
+            const card = document.createElement("div");
+            card.className = "block-card" + (block.valid ? "" : " invalid");
+
+            card.innerHTML = `
+                <h3>Blokk #${block.index}</h3>
+                ${!block.valid ? `<p class="warning">⚠️ Ugyldig blokk!</p>` : ""}
+                <p><strong>Data:</strong> ${block.data}</p>
+                <p><strong>Hash:</strong> <code>${block.hash}</code></p>
+                <p><strong>Forrige hash:</strong> <code>${block.previous_hash}</code></p>
+                <p><strong>Nonce:</strong> ${block.nonce}</p>
+            `;
+
+            container.appendChild(card);
+        });
+    });
+
+    document.getElementById("validate-btn").addEventListener("click", () => {
+        fetch("/valid")
+            .then(res => res.json())
+            .then(data => {
+            const result = document.getElementById("validation-result");
+
+            if (data.valid) {
+                result.textContent = "✅ Kjeden er gyldig!";
+                result.className = "validation-status valid";
+            } else {
+                result.textContent = "❌ Ugyldig kjede!";
+                result.className = "validation-status invalid";
+            }
+        })
+        .catch(() => {
+        const result = document.getElementById("validation-result");
+        result.textContent = "⚠️ Klarte ikke å validere kjeden.";
+        result.className = "validation-status invalid";
+        });
+    });
+    </script>
+    
+</body>
+</html>
