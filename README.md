@@ -90,6 +90,6 @@ Laget med ❤️ og CPU-varme 🔥 for å forstå hvordan blockchain fungerer!
 
 ## Skjermbilder
 
-![Skjermbilde av startskjermen for blokkjeden](images/skjermbilde_blokkjede.png)
-![Skjermbilde av loggen for blokkjeden](images/skjermbilde_logg.png)
-![Skjermbilde av blokkdetaljer](images/skjermbilde_logg_detaljer.png)
+![Skjermbilde av startskjermen for blokkjeden](images/blokkjede.png)
+![Skjermbilde av loggen for blokkjeden](images/logg.png)
+![Skjermbilde av blokkdetaljer](images/blokk_detaljer.png)
