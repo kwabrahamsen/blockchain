@@ -87,3 +87,9 @@ Applikasjonen kjører da på http://127.0.0.1:5000/.
 Dette prosjektet er lisensiert under [MIT-lisensen](LICENSE).
 
 Laget med ❤️ og CPU-varme 🔥 for å forstå hvordan blockchain fungerer!
+
+## Skjermbilder
+
+![Skjermbilde av startskjermen for blokkjeden](images/skjermbilde_blokkjede.png)
+![Skjermbilde av loggen for blokkjeden](images/skjermbilde_logg.png)
+![Skjermbilde av blokkdetaljer](images/skjermbilde_logg_detaljer.png)
